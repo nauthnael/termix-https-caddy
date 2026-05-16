@@ -51,6 +51,7 @@ TERMIX_PORT=9000 bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/t
 - Chay container `ghcr.io/lukegus/termix:latest`
 - Bind Termix vao `127.0.0.1` de khong public truc tiep ra internet
 - Kiem tra port `80` va `443`; neu dang bi dung thi hoi xac nhan truoc khi tiep tuc
+- Kiem tra domain da tro ve public IP cua VPS chua; neu chua thi nhac tro A record va hoi xac nhan
 - Tao `/etc/caddy/Caddyfile`
 - Mo port `80` va `443` neu VPS co UFW
 - Restart Caddy de tu dong xin SSL certificate

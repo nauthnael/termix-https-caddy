@@ -72,6 +72,62 @@ check_required_ports() {
   esac
 }
 
+get_public_ipv4() {
+  curl -4fsS --max-time 10 https://api.ipify.org 2>/dev/null \
+    || curl -4fsS --max-time 10 https://ifconfig.me/ip 2>/dev/null \
+    || true
+}
+
+resolve_domain_ipv4() {
+  getent ahostsv4 "$DOMAIN" \
+    | awk '{print $1}' \
+    | sort -u \
+    || true
+}
+
+check_domain_dns() {
+  local public_ip
+  local domain_ips
+  local confirm_dns
+
+  echo "==> Checking DNS for ${DOMAIN}"
+  public_ip="$(get_public_ipv4)"
+
+  if [[ -z "$public_ip" ]]; then
+    echo "Could not detect this VPS public IPv4. Skipping DNS check."
+    return
+  fi
+
+  domain_ips="$(resolve_domain_ipv4)"
+
+  echo "VPS public IPv4: ${public_ip}"
+  if [[ -n "$domain_ips" ]]; then
+    echo "Domain IPv4 records:"
+    echo "$domain_ips"
+  else
+    echo "Domain IPv4 records: none found"
+  fi
+
+  if echo "$domain_ips" | grep -Fxq "$public_ip"; then
+    echo "DNS looks good. ${DOMAIN} points to this VPS."
+    return
+  fi
+
+  echo
+  echo "${DOMAIN} does not currently point to this VPS public IP (${public_ip})."
+  echo "Create or update an A record for ${DOMAIN} -> ${public_ip}, then wait for DNS propagation."
+  read -r -p "Continue only if you will point the domain to this VPS now? [y/N]: " confirm_dns
+  case "${confirm_dns}" in
+    y|Y|yes|YES)
+      echo "Continuing. Caddy SSL will work after DNS points to this VPS."
+      ;;
+    *)
+      echo "Aborted. Point ${DOMAIN} to ${public_ip}, then run the script again."
+      exit 1
+      ;;
+  esac
+}
+
 check_required_ports
 
 echo "==> Updating apt packages"
@@ -79,6 +135,8 @@ apt-get update
 
 echo "==> Installing required packages"
 apt-get install -y ca-certificates curl gnupg debian-keyring debian-archive-keyring apt-transport-https
+
+check_domain_dns
 
 if ! command -v docker >/dev/null 2>&1; then
   echo "==> Installing Docker"
