@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOMAIN="${1:-}"
+DOMAIN="${1:-tuan.gg}"
 TERMIX_PORT="${TERMIX_PORT:-8044}"
 TERMIX_IMAGE="${TERMIX_IMAGE:-ghcr.io/lukegus/termix:latest}"
-
-if [[ -z "$DOMAIN" ]]; then
-  echo "Usage: $0 <domain>"
-  echo "Example: $0 t.0x.am"
-  exit 1
-fi
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Please run this script as root."

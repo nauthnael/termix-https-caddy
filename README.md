@@ -8,18 +8,26 @@ Script cai Termix sau Caddy reverse proxy voi HTTPS tu dong bang Let's Encrypt.
 - Domain da tro A record ve IP cua VPS
 - Chay script bang user `root`
 
-## Cai nhanh
+## Cai nhanh voi tuan.gg
 
-Thay `t.0x.am` bang domain cua ban:
+Chay lenh nay tren VPS:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/termix-https-caddy/main/install.sh) t.0x.am
+bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/termix-https-caddy/main/install.sh)
 ```
 
 Sau khi chay xong, mo:
 
 ```text
-https://t.0x.am
+https://tuan.gg
+```
+
+## Dung domain khac
+
+Truyen domain o cuoi lenh:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/termix-https-caddy/main/install.sh) example.com
 ```
 
 ## Tuy chinh port noi bo
@@ -27,7 +35,7 @@ https://t.0x.am
 Mac dinh Termix chay noi bo o port `8044`. Neu muon doi:
 
 ```bash
-TERMIX_PORT=9000 bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/termix-https-caddy/main/install.sh) t.0x.am
+TERMIX_PORT=9000 bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/termix-https-caddy/main/install.sh)
 ```
 
 ## Script se lam gi?
