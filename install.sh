@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOMAIN="${1:-tuan.gg}"
+DOMAIN="${1:-}"
 TERMIX_PORT="${TERMIX_PORT:-8044}"
 TERMIX_IMAGE="${TERMIX_IMAGE:-ghcr.io/lukegus/termix:latest}"
+
+if [[ -z "$DOMAIN" ]]; then
+  read -r -p "Enter your domain, for example tuan.gg: " DOMAIN
+fi
+
+if [[ -z "$DOMAIN" ]]; then
+  echo "Domain is required."
+  exit 1
+fi
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Please run this script as root."
