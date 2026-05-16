@@ -24,6 +24,56 @@ if ! command -v apt-get >/dev/null 2>&1; then
   exit 1
 fi
 
+port_listeners() {
+  local port="$1"
+
+  if command -v ss >/dev/null 2>&1; then
+    ss -ltnp "sport = :${port}" 2>/dev/null || true
+    return
+  fi
+
+  if command -v lsof >/dev/null 2>&1; then
+    lsof -nP -iTCP:"${port}" -sTCP:LISTEN 2>/dev/null || true
+    return
+  fi
+
+  return 0
+}
+
+check_required_ports() {
+  local busy_ports=()
+  local port
+  local listeners
+
+  for port in 80 443; do
+    listeners="$(port_listeners "${port}")"
+    if [[ -n "$listeners" ]]; then
+      busy_ports+=("${port}")
+      echo
+      echo "Port ${port} is already in use:"
+      echo "$listeners"
+    fi
+  done
+
+  if [[ "${#busy_ports[@]}" -eq 0 ]]; then
+    return
+  fi
+
+  echo
+  read -r -p "One or more required ports are in use. Continue and overwrite Caddy setup? [y/N]: " OVERWRITE_PORTS
+  case "${OVERWRITE_PORTS}" in
+    y|Y|yes|YES)
+      echo "Continuing. Make sure any conflicting web server is stopped if Caddy cannot start."
+      ;;
+    *)
+      echo "Aborted. Free ports 80 and 443, then run the script again."
+      exit 1
+      ;;
+  esac
+}
+
+check_required_ports
+
 echo "==> Updating apt packages"
 apt-get update
 

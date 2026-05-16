@@ -50,6 +50,7 @@ TERMIX_PORT=9000 bash <(curl -fsSL https://raw.githubusercontent.com/nauthnael/t
 - Cai Caddy tu repository chinh thuc
 - Chay container `ghcr.io/lukegus/termix:latest`
 - Bind Termix vao `127.0.0.1` de khong public truc tiep ra internet
+- Kiem tra port `80` va `443`; neu dang bi dung thi hoi xac nhan truoc khi tiep tuc
 - Tao `/etc/caddy/Caddyfile`
 - Mo port `80` va `443` neu VPS co UFW
 - Restart Caddy de tu dong xin SSL certificate
