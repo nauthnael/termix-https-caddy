@@ -36,6 +36,7 @@ else
 fi
 
 echo "==> Installing Caddy repository"
+rm -f /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 curl -fsSL "https://dl.cloudsmith.io/public/caddy/stable/gpg.key" \
   | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 
